@@ -18,6 +18,7 @@ class WorklogEntry:
     category: str
     task: str
     detail_memo: str = ""
+    source: str = "manual"
 
     def __post_init__(self) -> None:
         if self.project_scope not in {"개인", "회사"}:
@@ -42,4 +43,5 @@ class WorklogEntry:
             category=data["category"],
             task=data["task"],
             detail_memo=data.get("detail_memo", ""),
+            source=data.get("source", "manual"),
         )

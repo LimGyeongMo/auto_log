@@ -34,5 +34,10 @@ class WorklogStorage:
         self.entries.append(entry)
         self._save()
 
+    def replace_entries(self, predicate, new_entries: list[WorklogEntry]) -> None:
+        self.entries = [entry for entry in self.entries if not predicate(entry)]
+        self.entries.extend(new_entries)
+        self._save()
+
     def get_entries_by_date(self, work_date: str) -> list[WorklogEntry]:
         return [entry for entry in self.entries if entry.work_date == work_date]

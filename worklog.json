@@ -1,1 +1,28 @@
-[]
+[
+  {
+    "project_scope": "개인",
+    "work_date": "2026-03-17",
+    "start_time": "09:09",
+    "end_time": "09:39",
+    "tool": "Git",
+    "project": "worklog-cli",
+    "category": "Git 자동 수집",
+    "task": "오늘 커밋 1건 / 기초 작업 + README.md 정의 / 변경 파일 7개",
+    "detail_memo": "커밋:\n- 09:09 기초 작업 + README.md 정의\n변경 파일:\n- README.md\n- main.py\n- worklog.json\n- worklog_app/models.py\n- worklog_app/notion_sync.py\n- worklog_app/storage.py\n- worklog_app/git_sync.py",
+    "source": "git-auto",
+    "duration_minutes": 30
+  },
+  {
+    "project_scope": "개인",
+    "work_date": "2026-03-17",
+    "start_time": "09:00",
+    "end_time": "09:30",
+    "tool": "Git",
+    "project": "test",
+    "category": "Git 자동 수집",
+    "task": "변경 파일 1개",
+    "detail_memo": "변경 파일:\n- config.json",
+    "source": "git-auto",
+    "duration_minutes": 30
+  }
+]

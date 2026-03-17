@@ -99,11 +99,36 @@ def find_page_by_date(client: Client, data_source_id: str, work_date: str) -> di
 
 def create_page(client: Client, data_source_id: str, properties: dict) -> dict:
     try:
-        return client.pages.create(parent={"database_id": data_source_id}, properties=properties)
+        return client.request(
+            path="pages",
+            method="POST",
+            body={
+                "parent": {"database_id": data_source_id},
+                "properties": properties,
+                "template": {"type": "default"},
+            },
+        )
     except Exception:
-        if not hasattr(client, "data_sources"):
-            raise
-        return client.pages.create(parent={"data_source_id": data_source_id}, properties=properties)
+        try:
+            if hasattr(client, "data_sources"):
+                return client.request(
+                    path="pages",
+                    method="POST",
+                    body={
+                        "parent": {"data_source_id": data_source_id},
+                        "properties": properties,
+                        "template": {"type": "default"},
+                    },
+                )
+        except Exception:
+            pass
+
+        try:
+            return client.pages.create(parent={"database_id": data_source_id}, properties=properties)
+        except Exception:
+            if not hasattr(client, "data_sources"):
+                raise
+            return client.pages.create(parent={"data_source_id": data_source_id}, properties=properties)
 
 
 def update_page(client: Client, page_id: str, properties: dict) -> dict:

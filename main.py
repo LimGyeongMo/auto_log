@@ -1,5 +1,6 @@
 import argparse
 
+from worklog_app.git_sync import AUTO_SOURCE, collect_auto_entries
 from worklog_app.models import WorklogEntry
 from worklog_app.notion_sync import save_day_to_notion
 from worklog_app.report import (
@@ -17,6 +18,16 @@ from worklog_app.utils import (
     get_today_date_str,
     minutes_to_text,
 )
+
+
+def refresh_auto_entries(storage: WorklogStorage, work_date: str) -> None:
+    auto_entries = collect_auto_entries(work_date, "project_registry.json")
+    storage.replace_entries(
+        lambda entry: entry.work_date == work_date and getattr(entry, "source", "manual") == AUTO_SOURCE,
+        auto_entries,
+    )
+    if auto_entries:
+        print(f"[INFO] Git 자동 수집으로 {len(auto_entries)}개 프로젝트 작업을 갱신했습니다.")
 
 
 def print_menu() -> None:
@@ -100,6 +111,7 @@ def create_daily_report(storage: WorklogStorage, work_date: str) -> str | None:
 def save_to_notion(storage: WorklogStorage) -> None:
     print("\n[Notion 저장]")
     work_date = ask_date("저장할 날짜", default=get_today_date_str())
+    refresh_auto_entries(storage, work_date)
     entries = storage.get_entries_by_date(work_date)
     if not entries:
         print(f"{work_date} 데이터가 없습니다.")
@@ -126,6 +138,7 @@ def save_to_notion(storage: WorklogStorage) -> None:
 
 def save_to_notion_direct(storage: WorklogStorage, work_date: str) -> None:
     """메뉴를 거치지 않고 바로 Notion 저장을 실행한다."""
+    refresh_auto_entries(storage, work_date)
     entries = storage.get_entries_by_date(work_date)
     if not entries:
         print(f"{work_date} 데이터가 없습니다.")
