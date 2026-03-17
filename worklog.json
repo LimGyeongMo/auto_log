@@ -3,14 +3,14 @@
     "project_scope": "개인",
     "work_date": "2026-03-17",
     "start_time": "09:09",
-    "end_time": "09:39",
+    "end_time": "09:33",
     "tool": "Git",
     "project": "worklog-cli",
     "category": "Git 자동 수집",
-    "task": "오늘 커밋 1건 / 기초 작업 + README.md 정의 / 변경 파일 7개",
-    "detail_memo": "커밋:\n- 09:09 기초 작업 + README.md 정의\n변경 파일:\n- README.md\n- main.py\n- worklog.json\n- worklog_app/models.py\n- worklog_app/notion_sync.py\n- worklog_app/storage.py\n- worklog_app/git_sync.py",
+    "task": "오늘 커밋 2건 / [GMLIM_260317] Update : 노션 데이터 베이스저장시 기본템플릿으로 변경 / 기초 작업 + README.md 정의 / 변경 파일 5개",
+    "detail_memo": "커밋:\n- 09:33 [GMLIM_260317] Update : 노션 데이터 베이스저장시 기본템플릿으로 변경\n- 09:09 기초 작업 + README.md 정의\n변경 파일:\n- .env.example\n- NOTION_SETUP.md\n- README.md\n- worklog.json\n- worklog_app/notion_sync.py",
     "source": "git-auto",
-    "duration_minutes": 30
+    "duration_minutes": 24
   },
   {
     "project_scope": "개인",

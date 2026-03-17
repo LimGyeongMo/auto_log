@@ -40,6 +40,10 @@ def get_data_source_id() -> str:
     return data_source_id
 
 
+def get_work_items_data_source_id() -> str:
+    return getenv("NOTION_WORK_ITEMS_DATA_SOURCE_ID", "").strip()
+
+
 def build_notion_properties(
     entries: list,
     work_date: str,
@@ -66,6 +70,26 @@ def build_notion_properties(
         "Daily Summary": {"rich_text": rich_text_value(daily_summary or "(미입력)")},
         "Tomorrow TODO": {"rich_text": rich_text_value(tomorrow_todo or "(미입력)")},
         "Raw JSON": {"rich_text": rich_text_value(raw_json_text)},
+    }
+
+
+def build_work_item_properties(entry) -> dict:
+    return {
+        "Task": {
+            "title": [
+                {
+                    "type": "text",
+                    "text": {"content": entry.task},
+                }
+            ]
+        },
+        "Work Date": {"date": {"start": entry.work_date}},
+        "Duration": {"number": entry.duration_minutes},
+        "Category": {"rich_text": rich_text_value(entry.category)},
+        "Project": {"rich_text": rich_text_value(entry.project)},
+        "Tool": {"rich_text": rich_text_value(entry.tool)},
+        "Start Time": {"rich_text": rich_text_value(entry.start_time)},
+        "End Time": {"rich_text": rich_text_value(entry.end_time)},
     }
 
 
@@ -135,9 +159,61 @@ def update_page(client: Client, page_id: str, properties: dict) -> dict:
     return client.pages.update(page_id=page_id, properties=properties)
 
 
+def archive_page(client: Client, page_id: str) -> dict:
+    return client.pages.update(page_id=page_id, archived=True)
+
+
 def log_payload_debug(properties: dict) -> None:
     print("[DEBUG] Notion 속성 매핑 확인")
     print(json.dumps(properties, ensure_ascii=False, indent=2))
+
+
+def log_work_items_debug(entries: list) -> None:
+    print("[DEBUG] Notion 작업 상세 매핑 확인")
+    payload = [build_work_item_properties(entry) for entry in entries]
+    print(json.dumps(payload, ensure_ascii=False, indent=2))
+
+
+def find_work_item_pages_by_date(client: Client, data_source_id: str, work_date: str) -> list[dict]:
+    query_filter = {
+        "property": "Work Date",
+        "date": {"equals": work_date},
+    }
+
+    try:
+        response = client.databases.query(
+            database_id=data_source_id,
+            filter=query_filter,
+            page_size=100,
+        )
+    except Exception:
+        if not hasattr(client, "data_sources"):
+            raise
+        response = client.data_sources.query(
+            data_source_id=data_source_id,
+            filter=query_filter,
+            page_size=100,
+        )
+
+    return response.get("results", [])
+
+
+def sync_work_items_to_notion(client: Client, entries: list, work_date: str) -> None:
+    data_source_id = get_work_items_data_source_id()
+    if not data_source_id:
+        print("[INFO] NOTION_WORK_ITEMS_DATA_SOURCE_ID 값이 없어 작업 상세 DB 저장은 건너뜁니다.")
+        return
+
+    log_work_items_debug(entries)
+
+    existing_pages = find_work_item_pages_by_date(client, data_source_id, work_date)
+    for page in existing_pages:
+        archive_page(client, page["id"])
+
+    for entry in entries:
+        create_page(client, data_source_id, build_work_item_properties(entry))
+
+    print(f"[INFO] 작업 상세 DB를 동기화했습니다. date={work_date}, items={len(entries)}")
 
 
 def save_day_to_notion(
@@ -161,6 +237,7 @@ def save_day_to_notion(
             create_page(client, data_source_id, properties)
             print(f"[INFO] 새 페이지를 생성했습니다. date={work_date}")
 
+        sync_work_items_to_notion(client, entries, work_date)
         return True
     except Exception as error:
         print("[ERROR] Notion 저장 실패")
