@@ -1,0 +1,50 @@
+[
+  {
+    "project_scope": "회사",
+    "work_date": "2026-03-16",
+    "start_time": "09:00",
+    "end_time": "11:10",
+    "tool": "Android Studio",
+    "project": "ShareBike-Android",
+    "category": "버그수정",
+    "task": "로그인 API 예외 처리 수정",
+    "detail_memo": "401 응답 시 토큰 만료 메시지 분기 처리",
+    "duration_minutes": 130
+  },
+  {
+    "project_scope": "회사",
+    "work_date": "2026-03-16",
+    "start_time": "11:20",
+    "end_time": "13:20",
+    "tool": "Android Studio",
+    "project": "ShareBike-Android",
+    "category": "기능개발",
+    "task": "메인 홈 배너 UI 정리",
+    "detail_memo": "여백과 텍스트 크기 조정",
+    "duration_minutes": 120
+  },
+  {
+    "project_scope": "회사",
+    "work_date": "2026-03-16",
+    "start_time": "14:00",
+    "end_time": "16:40",
+    "tool": "VS Code",
+    "project": "Admin Web",
+    "category": "버그수정",
+    "task": "검색 조건 상태 유지 버그 수정",
+    "detail_memo": "뒤로가기 후 필터 유지 로직 수정",
+    "duration_minutes": 160
+  },
+  {
+    "project_scope": "개인",
+    "work_date": "2026-03-16",
+    "start_time": "16:50",
+    "end_time": "18:30",
+    "tool": "VS Code",
+    "project": "CouponApp",
+    "category": "테스트",
+    "task": "쿠폰 리스트 화면 문구 수정 및 QA 대응",
+    "detail_memo": "테스터 피드백 반영",
+    "duration_minutes": 100
+  }
+]

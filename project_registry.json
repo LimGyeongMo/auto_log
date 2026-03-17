@@ -1,0 +1,15 @@
+{
+  "personal_projects": [
+    {
+      "name": "worklog-cli",
+      "path": "C:\\Users\\ISDATA\\Desktop\\test2",
+      "description": "현재 업무기록 CLI 프로젝트"
+    },
+    {
+      "name": "test",
+      "path": "C:\\Users\\ISDATA\\Desktop\\test",
+      "description": "개인 프로젝트"
+    }
+  ],
+  "company_projects": []
+}
