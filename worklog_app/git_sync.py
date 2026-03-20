@@ -89,28 +89,13 @@ def collect_today_commits(project_path: Path, work_date: str) -> list[tuple[str,
     return commits
 
 
-def collect_changed_files(project_path: Path) -> list[str]:
-    result = run_git_command(project_path, ["status", "--short"])
-    if result.returncode != 0 or not result.stdout.strip():
-        return []
-
-    changed_files: list[str] = []
-    for line in result.stdout.splitlines():
-        file_path = line[3:] if len(line) > 3 else line
-        changed_files.append(file_path.strip())
-    return changed_files
-
-
-def build_time_range(commits: list[tuple[str, str]], has_changes: bool) -> tuple[str, str]:
+def build_time_range(commits: list[tuple[str, str]]) -> tuple[str, str]:
     if commits:
         start_time = commits[-1][0]
         end_time = commits[0][0]
         if start_time == end_time:
             return start_time, add_minutes(start_time, 30)
         return start_time, end_time
-
-    if has_changes:
-        return "09:00", "09:30"
 
     return "09:00", "09:30"
 
@@ -120,7 +105,7 @@ def add_minutes(time_text: str, minutes: int) -> str:
     return (time_value + timedelta(minutes=minutes)).strftime("%H:%M")
 
 
-def build_task_text(commits: list[tuple[str, str]], changed_files: list[str]) -> tuple[str, str]:
+def build_task_text(commits: list[tuple[str, str]]) -> tuple[str, str]:
     task_parts: list[str] = []
     detail_lines: list[str] = []
 
@@ -129,13 +114,6 @@ def build_task_text(commits: list[tuple[str, str]], changed_files: list[str]) ->
         task_parts.extend(subject for _, subject in commits[:2])
         detail_lines.append("커밋:")
         detail_lines.extend(f"- {time_text} {subject}" for time_text, subject in commits)
-
-    if changed_files:
-        task_parts.append(f"변경 파일 {len(changed_files)}개")
-        detail_lines.append("변경 파일:")
-        detail_lines.extend(f"- {file_path}" for file_path in changed_files[:10])
-        if len(changed_files) > 10:
-            detail_lines.append(f"- 외 {len(changed_files) - 10}개")
 
     return " / ".join(task_parts), "\n".join(detail_lines)
 
@@ -148,12 +126,11 @@ def collect_auto_entries(work_date: str, registry_path: str) -> list[WorklogEntr
             continue
 
         commits = collect_today_commits(project.path, work_date)
-        changed_files = collect_changed_files(project.path)
-        if not commits and not changed_files:
+        if not commits:
             continue
 
-        start_time, end_time = build_time_range(commits, bool(changed_files))
-        task_text, detail_text = build_task_text(commits, changed_files)
+        start_time, end_time = build_time_range(commits)
+        task_text, detail_text = build_task_text(commits)
         entries.append(
             WorklogEntry(
                 project_scope=project.project_scope,

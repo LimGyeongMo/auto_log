@@ -9,7 +9,18 @@
       "name": "test",
       "path": "C:\\Users\\ISDATA\\Desktop\\test",
       "description": "개인 프로젝트"
+    },
+    {
+      "name": "auto_blog",
+      "path": "C:\\Users\\ISDATA\\Desktop\\auto_blog",
+      "description": "개인 프로젝트"
     }
   ],
-  "company_projects": []
+  "company_projects": [
+    {
+      "name": "BikebankAdmin2024",
+      "path": "C:\\Users\\ISDATA\\Desktop\\Bikebank_web\\BikebankAdmin2024",
+      "description": "회사 프로젝트"
+    }
+  ]
 }
